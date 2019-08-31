@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>RANDRAW</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=yes">
+
+        <link rel="manifest" href="site.webmanifest">
+        <link rel="apple-touch-icon" href="icon.png">
+
+        <link rel="icon" href="favicon.ico?v=1.0">
+
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/randraw.css">
+
+    </head>
+
+    <body>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top border-bottom">
+
+            <a class="navbar-brand" href=".">RANDRAW</a>
+
+            <button class="navbar-toggler my-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                <ul class="nav nav-pills nav-fill ml-auto" id="pills-tab" role="tablist">
+
+                    <li class="nav-item">
+                        <a class="nav-link activate-tab active" id="calculator-tab" data-toggle="tab" href="#main" role="tab" aria-controls="main" aria-selected="true">Main</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link activate-tab" id="roadmap-tab" data-toggle="tab" href="#roadmap" role="tab" aria-controls="roadmap" aria-selected="false">Roadmap</a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </nav>
+
+        <div id="main-container" class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div class="container">
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+
+                                <div class="tab-content" id="pills-tab-content">
+
+                                    <div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="calculator-tab">
+
+                                        <div class="row" id="calc-row">
+                                            <canvas id="canvas-in" class="randraw-canvas"></canvas>
+                                            <canvas id="canvas-out" class="randraw-canvas"></canvas>
+                                        </div>
+
+                                        <div class="text-center" id="iteration-row">
+                                            Iteration: <span id="iteration-counter">0</span>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="tab-pane fade" id="roadmap" role="tabpanel">
+
+                                        <div class="row">
+
+                                            <div class="col-md-12">
+
+                                                <h2 class="mb-5">Roadmap</h2>
+
+                                                <p>
+                                                    <a href="https://github.com/randraw/randraw.github.io/issues/1">Propose new features here</a>
+                                                    or
+                                                    <a href="https://github.com/randraw/randraw.github.io/issues?q=is%3Aopen+is%3Aissue+project%3Arandraw%2Frandraw.github.io%2F1">
+                                                    vote on existing features here</a>.
+                                                </p>
+
+                                                <h3>0.1</h3>
+                                                <ul>
+                                                    <li>Release basic functionality</li>
+                                                </ul>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div id="footer" class="text-center">
+                        Version: 0.1 (<a href="#roadmap" class="activate-tab">roadmap</a>)
+                        | GitHub <a target="_blank" href="https://github.com/randraw/randraw.github.io/issues?q=is%3Aopen+is%3Aissue+project%3Arandraw%2Frandraw.github.io%2F1">@RANDRAW</a>
+                        | Dev: <a target="_blank" href="https://twitter.com/vsubhuman">@vsubhuman</a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <script src="assets/js/vendor/jquery/jquery.min.js"></script>
+        <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="node_modules/handlebars/dist/handlebars.min.js"></script>
+        <script src="node_modules/js-cookie/src/js.cookie.js"></script>
+        <script src="assets/js/utils.js"></script>
+        <script src="assets/js/hashtabs.js"></script>
+        <script src="assets/js/randraw.js"></script>
+
+    </body>
+
+</html>
