@@ -40,6 +40,7 @@ function scoreImgData(data1, data2) {
 
 function updateUi() {
   $('#iteration-counter').text(window.RandrawState.Counter.Iteration);
+  $('#score-counter').text(window.RandrawState.Counter.Score);
 }
 
 function run() {
@@ -75,6 +76,8 @@ function run() {
   // console.log(score1, score2, score2 < score1);
   if (score1 < score2) {
     contextOut.putImageData(imageDataOut1, 0, 0);
+  } else {
+    window.RandrawState.Counter.Score = score2;
   }
   setTimeout(function () {
     updateUi();
@@ -138,6 +141,7 @@ $(function() {
         },
         Counter: {
           Iteration: 0,
+          Score: -1,
           nextIteration: function() {
             this.Iteration = this.Iteration + 1;
           }
