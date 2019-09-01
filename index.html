@@ -15,7 +15,7 @@
         <link rel="icon" href="favicon.ico?v=1.0">
 
         <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="assets/css/randraw.css">
+        <link rel="stylesheet" href="assets/css/randraw.css?v=1">
 
     </head>
 
@@ -68,12 +68,18 @@
                                             <canvas id="canvas-out" class="randraw-canvas"></canvas>
                                         </div>
 
-                                        <div class="text-center" id="iteration-row">
+                                        <div class="text-center underrow" id="iteration-row">
                                             Distance: <span id="score-counter">...</span>
                                             |
                                             Iteration: <span id="iteration-counter">...</span>
                                             |
                                             Time: <span id="time-counter">...</span>
+                                        </div>
+
+                                        <div class="text-center underrow" id="buttons-row">
+                                            <button id="sp" disabled="disabled">
+                                                Start Randraw
+                                            </button>
                                         </div>
 
                                     </div>
@@ -138,7 +144,7 @@
         <script src="node_modules/js-cookie/src/js.cookie.js"></script>
         <script src="assets/js/hashtabs.js"></script>
         <script src="assets/js/utils.js?v=1"></script>
-        <script src="assets/js/randraw.js?v=2"></script>
+        <script src="assets/js/randraw.js?v=3"></script>
 
     </body>
 

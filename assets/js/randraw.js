@@ -61,20 +61,26 @@ function reDrawImages() {
 }
 
 function updateUi() {
-  let counter = window.RandrawState.Counter;
+  let state = window.RandrawState;
+  let counter = state.Counter;
   $('#score-counter').text(counter.Score);
   $('#iteration-counter').text(`${counter.Iteration.Successful} / ${counter.Iteration.Total}`);
   $('#time-counter').text(Utils.millisToTimeStr(counter.Time.dur()));
+  let $spButton = $('#sp');
+  $spButton.text(state.RunningState.isRunning ? 'Pause Randraw' : 'Start Randraw');
+  $spButton.prop('disabled', !state.RunningState.canRun);
   drawOutputToDisplay();
 }
 
 function run() {
 
   let state = window.RandrawState;
+  state.RunningState.isRunning = true;
 
   let time = Utils.currentMillis();
-  if (state.PauseRequest.flag) {
-    state.PauseRequest.flag = false;
+  if (state.RunningState.pauseFlag) {
+    state.RunningState.pauseFlag = false;
+    state.RunningState.isRunning = false;
     state.Counter.Time.PauseStart = time;
     updateUi();
     return;
@@ -167,7 +173,8 @@ function loadImage(cb) {
 
 function init() {
   loadImage(() => {
-    run();
+    window.RandrawState.RunningState.canRun = true;
+    updateUi();
   });
 }
 
@@ -190,6 +197,15 @@ function loadHandlebarsPartials(filemap = {}, callback) {
             }
         });
     })(0);
+}
+
+function sp() {
+  let state = window.RandrawState.RunningState;
+  if (state.isRunning) {
+    state.pauseFlag = true;
+  } else {
+    run();
+  }
 }
 
 $(function() {
@@ -235,7 +251,7 @@ $(function() {
               this.Successful = this.Successful + 1;
             },
           },
-          Score: -1,
+          Score: 1,
           Time: {
             TimerStart: -1,
             PauseStart: -1,
@@ -246,14 +262,18 @@ $(function() {
             }
           },
         },
-        PauseRequest: {
-          flag: false,
+        RunningState: {
+          isRunning: false,
+          pauseFlag: false,
+          canRun: false,
         }
     };
 
     $(window).on('resize', () => {
       reDrawImages();
     });
+
+    $('#sp').on('click', sp);
 
     HashTabs.bind({
       tabsSelector: '.activate-tab.nav-link',
