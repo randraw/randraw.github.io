@@ -39,13 +39,14 @@ function scoreImgData(data1, data2) {
 }
 
 function updateUi() {
-  $('#iteration-counter').text(window.RandrawState.Counter.Iteration);
-  $('#score-counter').text(window.RandrawState.Counter.Score);
+  let counter = window.RandrawState.Counter;
+  $('#iteration-counter').text(`${counter.Iteration.Successful} / ${counter.Iteration.Total}`);
+  $('#score-counter').text(counter.Score);
 }
 
 function run() {
 
-  window.RandrawState.Counter.nextIteration();
+  window.RandrawState.Counter.Iteration.totalUp();
 
   // Output Size
   let canvasOut = window.RandrawState.Canvas.Out;
@@ -60,14 +61,22 @@ function run() {
   let imageDataOut1 = contextOut.getImageData(0,0,canW,canH);
   let dataOut1 = imageDataOut1.data;
   let score1 = scoreImgData(dataIn, dataOut1);
+  if (window.RandrawState.Const.InitScore <= 0) {
+    window.RandrawState.Const.InitScore = score1;
+  }
+  let scoreRatio = score1 / window.RandrawState.Const.InitScore;
 
   // Random rect
-  let [x, y] = [Utils.randomInt(0, canW), Utils.randomInt(0, canH)];
-  let [w, h] = [Utils.randomInt(0, canW-x), Utils.randomInt(0, canH-y)];
+  let [x, y] = [Utils.randomInt(5, canW - 5), Utils.randomInt(5, canH - 5)];
+  let [maxW, maxH] = [Math.min(x, canW - x), Math.min(y, canH - y)];
+  if (Math.random() > scoreRatio) {
+    [maxW, maxH] = [maxW * scoreRatio, maxH * scoreRatio];
+  }
+  let [w, h] = [Utils.randomInt(0, maxW * 2), Utils.randomInt(0, maxH * 2)];
 
   // Draw the rect
   contextOut.fillStyle = Utils.randomRgba();
-  contextOut.fillRect(x, y, w, h);
+  contextOut.fillRect(x - (w/2), y - (h/2), w, h);
 
   // Score output data after
   let dataOut2 = contextOut.getImageData(0,0,canW, canH).data;
@@ -77,7 +86,8 @@ function run() {
   if (score1 < score2) {
     contextOut.putImageData(imageDataOut1, 0, 0);
   } else {
-    window.RandrawState.Counter.Score = score2;
+    window.RandrawState.Counter.Score = scoreRatio;
+    window.RandrawState.Counter.Iteration.successfulUp();
   }
   setTimeout(function () {
     updateUi();
@@ -139,12 +149,21 @@ $(function() {
           In: canvasIn.getContext('2d'),
           Out: canvasOut.getContext('2d'),
         },
+        Const: {
+          InitScore: -1,
+        },
         Counter: {
-          Iteration: 0,
+          Iteration: {
+            Successful: 0,
+            Total: 0,
+            totalUp: function () {
+              this.Total = this.Total + 1;
+            },
+            successfulUp: function () {
+              this.Successful = this.Successful + 1;
+            },
+          },
           Score: -1,
-          nextIteration: function() {
-            this.Iteration = this.Iteration + 1;
-          }
         }
     };
 
