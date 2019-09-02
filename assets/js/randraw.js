@@ -69,6 +69,7 @@ function updateUi() {
   $('#sp').prop('disabled', !state.RunningState.canRun);
   $('#sp-img').prop('src', state.RunningState.isRunning ? 'assets/img/pause.png' : 'assets/img/play.png');
   $('#upload-input').prop('disabled', state.RunningState.isRunning);
+  $('#dl').prop('disabled', !window.RandrawState.Output.MainCanvas);
   drawOutputToDisplay();
 }
 
@@ -209,6 +210,16 @@ function sp() {
   }
 }
 
+function dl() {
+  let can = window.RandrawState.Output.MainCanvas;
+  if (!can) {
+    alert('No output is available at the moment!');
+    return;
+  }
+  let url = can.toDataURL("image/png", 1.0);
+  window.open().document.write(`<img src="${url}"/><br/><br/><a download="randraw_${new Date()}.png" href="${url}">Download PNG file</a>`);
+}
+
 function uploadInput() {
   let state = window.RandrawState;
   if (state.Counter.Iteration.Total > 0) {
@@ -332,6 +343,7 @@ $(function() {
 
     $('#sp').on('click', sp);
     $('#upload-input').on('click', uploadInput);
+    $('#dl').on('click', dl);
 
     HashTabs.bind({
       tabsSelector: '.activate-tab.nav-link',

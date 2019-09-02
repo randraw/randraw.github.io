@@ -13,6 +13,10 @@ body {
     margin-top: 25px;
 }
 
+.underbutton.neighbor {
+    margin-left: 10px;
+}
+
 .inp-ctx {
     font-size: 12px;
 }
