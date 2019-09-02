@@ -13,8 +13,12 @@ function UtilsConstructor() {
     return this.randomInt(0,255);
   };
 
-  this.randomRgba = function() {
-    return `rgba(${Utils.randomByte()},${Utils.randomByte()},${Utils.randomByte()},${Math.random()})`
+  this.randomRgba = function(isGreyscale = false) {
+    let alpha = Utils.randomByte();
+    let byte1 = Utils.randomByte();
+    return isGreyscale ?
+      `rgba(${byte1},${byte1},${byte1},${alpha})`
+      : `rgba(${byte1},${Utils.randomByte()},${Utils.randomByte()},${alpha})`;
   };
 
   this.currentMillis = function () {

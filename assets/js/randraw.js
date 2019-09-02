@@ -13,9 +13,15 @@ function scoreImgData(data1, data2) {
     throw new Error('Invalid scoring img data');
   }
   let sum = 0;
-  for (let i = 0; i < data1.length; i++) {
-    let [a,b] = [data1[i], data2[i]];
-    sum += Math.max(a,b) - Math.min(a,b);
+  let getRgba = (x,i) => [x[i], x[i+1], x[i+2], x[i+3]];
+  let distance = (a,b) => Math.max(a,b) - Math.min(a,b);
+  for (let i = 0; i < data1.length; i+=4) {
+    let [[r1,g1,b1,a1],[r2,g2,b2,a2]] = [getRgba(data1, i), getRgba(data2, i)];
+    if (window.RandrawState.Options.GreyscaleCompare) {
+      sum += Math.round(distance((r1+g1+b1) / 3, (r2+g2+b2) / 3))
+    } else {
+      sum += (distance(r1,r2) + distance(g1,g2) + distance(b1,b2));
+    }
   }
   return sum;
 }
@@ -24,12 +30,7 @@ function scoreImgDataFromWhite(data) {
   if (!data) {
     throw new Error('Invalid scoring img data');
   }
-  let sum = 0;
-  for (let i = 0; i < data.length; i++) {
-    let [a,b] = [data[i], 255];
-    sum += Math.max(a,b) - Math.min(a,b);
-  }
-  return sum;
+  return scoreImgData(data, new Array(data.length).fill(255));
 }
 
 function drawOutputToDisplay() {
@@ -119,7 +120,7 @@ function run() {
   let [w, h] = [Utils.randomInt(0, maxW * 2), Utils.randomInt(0, maxH * 2)];
 
   // Draw the rect
-  contextOut.fillStyle = Utils.randomRgba();
+  contextOut.fillStyle = Utils.randomRgba(state.Options.GreyscaleDrawing);
   contextOut.fillRect(x - (w/2), y - (h/2), w, h);
 
   // Score output data after
@@ -334,6 +335,10 @@ $(function() {
           isRunning: false,
           pauseFlag: false,
           canRun: false,
+        },
+        Options: {
+          GreyscaleCompare: false,
+          GreyscaleDrawing: false,
         }
     };
 
