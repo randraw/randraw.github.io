@@ -114,8 +114,8 @@ function run() {
   // Random rect
   let [x, y] = [Utils.randomInt(5, canW - 5), Utils.randomInt(5, canH - 5)];
   let [maxW, maxH] = [Math.min(x, canW - x), Math.min(y, canH - y)];
-  if (Math.random() > scoreRatio) {
-    [maxW, maxH] = [maxW * scoreRatio, maxH * scoreRatio];
+  if (state.Options.DistanceRatioBias && (Math.random() > scoreRatio)) {
+    [maxW, maxH] = [maxW * Utils.random(scoreRatio, 1), maxH * Utils.random(scoreRatio, 1)];
   }
   let [w, h] = [Utils.randomInt(0, maxW * 2), Utils.randomInt(0, maxH * 2)];
 
@@ -339,6 +339,7 @@ $(function() {
         Options: {
           GreyscaleCompare: false,
           GreyscaleDrawing: false,
+          DistanceRatioBias: true,
         }
     };
 

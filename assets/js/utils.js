@@ -1,12 +1,16 @@
 function UtilsConstructor() {
 
-  this.randomInt = function(min, max) {
+  this.random = function(min, max) {
     min = min || 0;
     max = max || Number.MAX_SAFE_INTEGER;
     if (min > max) {
-      throw new Error(`Utils.randomInt :: min (${min}) > max (${max})`);
+      throw new Error(`Utils.random :: min (${min}) > max (${max})`);
     }
     return (Math.random() * (max - min)) + min;
+  };
+
+  this.randomInt = function(min, max) {
+    return Math.floor(this.random(min,max));
   };
 
   this.randomByte = function() {
