@@ -22,11 +22,11 @@ function UtilsConstructor() {
   };
 
   this.millisToTimeStr = function(millis) {
-    let r = Math.round;
+    let r = Math.floor;
     let p = x => String(x).padStart(2, '0');
     let seconds = r(millis / 1000) % 60;
-    let minutes = r((millis / 1000) / 60) % 60;
-    let hours = r(((millis / 1000) / 60) / 60);
+    let minutes = r(r(millis / 1000) / 60) % 60;
+    let hours = r(r(r(millis / 1000) / 60) / 60);
     return `${hours ? `${p(hours)}:` : ''}${p(minutes)}:${p(seconds)}`;
   }
 }
