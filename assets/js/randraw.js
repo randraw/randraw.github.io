@@ -66,9 +66,9 @@ function updateUi() {
   $('#score-counter').text(counter.Score);
   $('#iteration-counter').text(`${counter.Iteration.Successful} / ${counter.Iteration.Total}`);
   $('#time-counter').text(Utils.millisToTimeStr(counter.Time.dur()));
-  let $spButton = $('#sp');
-  $spButton.text(state.RunningState.isRunning ? 'Pause Randraw' : 'Start Randraw');
-  $spButton.prop('disabled', !state.RunningState.canRun);
+  $('#sp').prop('disabled', !state.RunningState.canRun);
+  $('#sp-img').prop('src', state.RunningState.isRunning ? 'assets/img/pause.png' : 'assets/img/play.png');
+  $('#upload-input').prop('disabled', state.RunningState.isRunning);
   drawOutputToDisplay();
 }
 
@@ -156,7 +156,7 @@ function getImgData(img) {
   return ctx.getImageData(0, 0, img.width, img.height).data;
 }
 
-function loadImage(cb) {
+function loadImage(src, cb) {
   let img = new Image();
   img.onload = () => {
     let state = window.RandrawState;
@@ -165,14 +165,15 @@ function loadImage(cb) {
     state.Output.MainCanvas = newWhiteCanvas(img.width, img.height);
     state.Output.MainCanvasContext = state.Output.MainCanvas.getContext('2d');
     state.Input.InitScore = scoreImgDataFromWhite(state.Input.MainImgData);
+    state.Counter.reset();
     reDrawImages();
     cb();
   };
-  img.src = './tile.png';
+  img.src = src;
 }
 
 function init() {
-  loadImage(() => {
+  loadImage('./tile.png',() => {
     window.RandrawState.RunningState.canRun = true;
     updateUi();
   });
@@ -206,6 +207,49 @@ function sp() {
   } else {
     run();
   }
+}
+
+function uploadInput() {
+  let state = window.RandrawState;
+  if (state.Counter.Iteration.Total > 0) {
+    if (!confirm('Uploading new image will erase any existing progress. Continue?')) {
+      return;
+    }
+  }
+  let input = document.createElement('input');
+  input.type='file';
+  input.accept='image/png, image/jpeg';
+  window.RandrawState.RunningState.canRun = false;
+  setTimeout(function() {
+    $(input).click();
+    $(input).on('change', function () {
+      try {
+        if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+          alert('The File APIs are not fully supported in this browser.');
+        } else if (!input.files) {
+          alert("This browser doesn't seem to support the `files` property of file inputs.");
+        } else if (!input.files[0]) {
+          alert("Please select a file before clicking 'Load'");
+        } else {
+          let file = input.files[0];
+          let fr = new FileReader();
+          fr.onload = function (e) {
+            if (typeof fr.result === 'string') {
+              loadImage(fr.result, () => {
+                updateUi();
+                window.RandrawState.RunningState.canRun = true;
+              })
+            } else {
+              alert(`Unexpected file loader result type: ${typeof fr.result}`)
+            }
+          };
+          fr.readAsDataURL(file);
+        }
+      } finally {
+        window.RandrawState.RunningState.canRun = true;
+      }
+    });
+  },0);
 }
 
 $(function() {
@@ -250,6 +294,10 @@ $(function() {
             successfulUp: function () {
               this.Successful = this.Successful + 1;
             },
+            reset: function () {
+              this.Successful = 0;
+              this.Total = 0;
+            }
           },
           Score: 1,
           Time: {
@@ -259,7 +307,16 @@ $(function() {
               return this.TimerStart > 0
                 ? Utils.currentMillis() - this.TimerStart
                 : 0;
-            }
+            },
+            reset: function () {
+              this.TimerStart = -1;
+              this.PauseStart = -1;
+            },
+          },
+          reset: function () {
+            this.Iteration.reset();
+            this.Time.reset();
+            this.Score = 1;
           },
         },
         RunningState: {
@@ -274,6 +331,7 @@ $(function() {
     });
 
     $('#sp').on('click', sp);
+    $('#upload-input').on('click', uploadInput);
 
     HashTabs.bind({
       tabsSelector: '.activate-tab.nav-link',
