@@ -124,7 +124,8 @@ function run() {
   }
   let [w, h] = [Utils.randomInt(0, maxW * 2), Utils.randomInt(0, maxH * 2)];
 
-  if (Math.random() > 0.5) {
+  let method = Utils.randomInt(0, 3);
+  if (method === 0) {
     // Draw the rect
     contextOut.fillStyle = Utils.randomRgba(state.Options.GreyscaleDrawing);
     contextOut.fillRect(x - (w/2), y - (h/2), w, h);
@@ -132,7 +133,15 @@ function run() {
     let minSide = Math.min(w, h);
     contextOut.lineWidth = Utils.randomInt(Math.min(minSide, 1), minSide > 1 ? minSide / 2 : minSide);
     contextOut.strokeStyle = Utils.randomRgba(state.Options.GreyscaleDrawing);
-    contextOut.strokeRect(x - (w/2), y - (h/2), w, h);
+    if (method === 1) {
+      contextOut.strokeRect(x - (w/2), y - (h/2), w, h);
+    } else {
+      let direction = Math.random() > 0.5 ? 1 : -1;
+      contextOut.beginPath();
+      contextOut.moveTo(x - (w/2), y + ((h / 2) * direction));
+      contextOut.lineTo(x + (w/2), y + ((h / 2) * -direction));
+      contextOut.stroke();
+    }
   }
 
   // Score output data after
