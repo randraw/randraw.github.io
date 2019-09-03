@@ -178,8 +178,10 @@ function loadImage(src, cb) {
     state.Input.MainImgData = getImgData(img);
     state.Output.MainCanvas = newWhiteCanvas(img.width, img.height);
     state.Output.MainCanvasContext = state.Output.MainCanvas.getContext('2d');
-    state.Input.InitScore = scoreImgDataFromWhite(state.Input.MainImgData);
+    let [imgW, imgH] = state.Input.size();
+    state.Input.InitScore = imgW * imgH * 3 * 255;
     state.Counter.reset();
+    state.Counter.Score = scoreImgDataFromWhite(state.Input.MainImgData) / state.Input.InitScore;
     reDrawImages();
     cb();
   };
