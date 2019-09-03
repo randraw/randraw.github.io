@@ -39,6 +39,11 @@ function drawOutputToDisplay() {
   let outputCanvas = state.Output.MainCanvas;
   let [inpW, inpH] = state.Input.size();
   let [newW, newH] = state.ScaledImgSize;
+  contextOut.globalAlpha = 1;
+  if (state.Options.OutputOpacity < 1) {
+    contextOut.drawImage(state.Canvas.In, 0, 0);
+    contextOut.globalAlpha = state.Options.OutputOpacity;
+  }
   contextOut.drawImage(outputCanvas, 0, 0, inpW, inpH, 0, 0, newW, newH);
 }
 
@@ -340,6 +345,7 @@ $(function() {
           GreyscaleCompare: false,
           GreyscaleDrawing: false,
           DistanceRatioBias: true,
+          OutputOpacity: 1,
         }
     };
 
