@@ -126,7 +126,13 @@ function run() {
 
   // Draw the rect
   contextOut.fillStyle = Utils.randomRgba(state.Options.GreyscaleDrawing);
-  contextOut.fillRect(x - (w/2), y - (h/2), w, h);
+  if (Math.random() > 0.5) {
+    contextOut.fillRect(x - (w/2), y - (h/2), w, h);
+  } else {
+    let minSide = Math.min(w, h);
+    contextOut.lineWidth = Utils.randomInt(Math.min(minSide, 1), minSide > 1 ? minSide / 2 : minSide);
+    contextOut.strokeRect(x - (w/2), y - (h/2), w, h);
+  }
 
   // Score output data after
   let dataOut2 = contextOut.getImageData(0,0,canW, canH).data;
