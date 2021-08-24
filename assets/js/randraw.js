@@ -69,7 +69,8 @@ function reDrawImages() {
 function updateUi() {
   let state = window.RandrawState;
   let counter = state.Counter;
-  $('#score-counter').text(counter.Score);
+  const toFixed = (x, n) => (x||0).toFixed(n);
+  $('#score-counter').text(`${toFixed(counter.ScorePercent, 2)}% ${toFixed(counter.Score, 8)}`);
   $('#iteration-counter').text(`${counter.Iteration.Successful} / ${counter.Iteration.Total}`);
   $('#time-counter').text(Utils.millisToTimeStr(counter.Time.dur()));
   $('#sp').prop('disabled', !state.RunningState.canRun);
@@ -115,6 +116,7 @@ function run() {
   let dataOut1 = imageDataOut1.data;
   let score1 = scoreImgData(dataIn, dataOut1);
   let scoreRatio = score1 / state.Input.InitScore;
+  let scorePercent = score1 / state.Input.InitScoreWhite100;
 
   // Random rect
   let [x, y] = [Utils.randomInt(5, canW - 5), Utils.randomInt(5, canH - 5)];
@@ -153,6 +155,7 @@ function run() {
     contextOut.putImageData(imageDataOut1, 0, 0);
   } else {
     state.Counter.Score = scoreRatio;
+    state.Counter.ScorePercent = scorePercent;
     state.Counter.Iteration.successfulUp();
   }
   setTimeout(function () {
@@ -189,8 +192,10 @@ function loadImage(src, cb) {
     state.Output.MainCanvasContext = state.Output.MainCanvas.getContext('2d');
     let [imgW, imgH] = state.Input.size();
     state.Input.InitScore = imgW * imgH * 3 * 255;
+    state.Input.InitScoreWhite = scoreImgDataFromWhite(state.Input.MainImgData);
+    state.Input.InitScoreWhite100 = state.Input.InitScoreWhite / 100;
     state.Counter.reset();
-    state.Counter.Score = scoreImgDataFromWhite(state.Input.MainImgData) / state.Input.InitScore;
+    state.Counter.Score = state.Input.InitScoreWhite / state.Input.InitScore;
     reDrawImages();
     cb();
   };
@@ -305,6 +310,7 @@ $(function() {
             return [this.MainImg.width, this.MainImg.height];
           },
           InitScore: -1,
+          InitScoreWhite: -1,
         },
         Output: {
           MainCanvas: null,
@@ -335,6 +341,7 @@ $(function() {
             }
           },
           Score: 1,
+          ScorePercent: 100,
           Time: {
             TimerStart: -1,
             PauseStart: -1,
@@ -352,6 +359,7 @@ $(function() {
             this.Iteration.reset();
             this.Time.reset();
             this.Score = 1;
+            this.ScorePercent = 100;
           },
         },
         RunningState: {
