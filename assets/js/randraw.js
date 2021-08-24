@@ -129,6 +129,7 @@ function run() {
 
   const greyscale = Math.random() < state.Options.GreyscaleDrawing;
 
+  contextOut.globalAlpha = Math.random();
   let method = Utils.randomInt(0, 3);
   if (method === 0) {
     // Draw the rect
