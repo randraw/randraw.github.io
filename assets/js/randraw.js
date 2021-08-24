@@ -127,15 +127,17 @@ function run() {
   }
   let [w, h] = [Utils.randomInt(0, maxW * 2), Utils.randomInt(0, maxH * 2)];
 
+  const greyscale = Math.random() < state.Options.GreyscaleDrawing;
+
   let method = Utils.randomInt(0, 3);
   if (method === 0) {
     // Draw the rect
-    contextOut.fillStyle = Utils.randomRgba(state.Options.GreyscaleDrawing);
+    contextOut.fillStyle = Utils.randomRgba(greyscale);
     contextOut.fillRect(x - (w/2), y - (h/2), w, h);
   } else {
     let minSide = Math.min(w, h);
     contextOut.lineWidth = Utils.randomInt(Math.min(minSide, 1), minSide > 1 ? minSide / 2 : minSide);
-    contextOut.strokeStyle = Utils.randomRgba(state.Options.GreyscaleDrawing);
+    contextOut.strokeStyle = Utils.randomRgba(greyscale);
     if (method === 1) {
       contextOut.strokeRect(x - (w/2), y - (h/2), w, h);
     } else {
@@ -370,7 +372,7 @@ $(function() {
         },
         Options: {
           GreyscaleCompare: false,
-          GreyscaleDrawing: false,
+          GreyscaleDrawing: 0.0,
           DistanceRatioBias: true,
           OutputOpacity: 1,
         }
