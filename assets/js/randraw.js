@@ -117,12 +117,13 @@ function run() {
   let score1 = scoreImgData(dataIn, dataOut1);
   let scoreRatio = score1 / state.Input.InitScore;
   let scorePercent = score1 / state.Input.InitScoreWhite100;
+  let scorePercent100 = scorePercent / 100;
 
   // Random rect
   let [x, y] = [Utils.randomInt(5, canW - 5), Utils.randomInt(5, canH - 5)];
   let [maxW, maxH] = [Math.min(x, canW - x), Math.min(y, canH - y)];
-  if (state.Options.DistanceRatioBias && (Math.random() > scoreRatio)) {
-    [maxW, maxH] = [maxW * Utils.random(scoreRatio, 1), maxH * Utils.random(scoreRatio, 1)];
+  if (state.Options.DistanceRatioBias && (Math.random() > scorePercent100)) {
+    [maxW, maxH] = [maxW * Utils.random(scorePercent100, 1), maxH * Utils.random(scorePercent100, 1)];
   }
   let [w, h] = [Utils.randomInt(0, maxW * 2), Utils.randomInt(0, maxH * 2)];
 
