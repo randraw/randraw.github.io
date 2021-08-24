@@ -129,7 +129,10 @@ function run() {
 
   const greyscale = Math.random() < state.Options.GreyscaleDrawing;
 
-  contextOut.globalAlpha = Math.random();
+  const opacityMin = Math.min(state.Options.OpacityRange1, state.Options.OpacityRange2);
+  const opacityMax = Math.max(state.Options.OpacityRange1, state.Options.OpacityRange2);
+  contextOut.globalAlpha = Utils.random(opacityMin, opacityMax);
+
   let method = Utils.randomInt(0, 3);
   if (method === 0) {
     // Draw the rect
@@ -375,6 +378,8 @@ $(function() {
           GreyscaleCompare: false,
           GreyscaleDrawing: 0.0,
           DistanceRatioBias: true,
+          OpacityRange1: 0.01,
+          OpacityRange2: 1.00,
           OutputOpacity: 1,
         }
     };

@@ -90,8 +90,15 @@
 
                                         <div id="parameters">
                                             <h4>Parameters</h4>
-                                            <label for="GreyscaleDrawing">Greyscale Drawing</label>
+
+                                            <label for="GreyscaleDrawing">Greyscale Drawing:</label>
                                             <input type="range" min="0" max="1" step="0.01" value="0" class="slider" id="GreyscaleDrawing" oninput="inputParameters(this)"/>
+                                            <br/>
+                                            <label>OpacityRange:</label>
+                                            <input type="range" min="0.01" max="1" step="0.01" value="0.01" class="slider" id="OpacityRange1" oninput="inputParameters(this)"/>
+                                            <input type="range" min="0.01" max="1" step="0.01" value="1" class="slider" id="OpacityRange2" oninput="inputParameters(this)"/>
+                                            <br/>
+
                                         </div>
 
                                     </div>
