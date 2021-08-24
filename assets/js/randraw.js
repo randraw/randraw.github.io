@@ -395,3 +395,7 @@ $(function() {
       // 'name': 'assets/hbs/partial/partial.hbs',
     }, init);
 });
+
+function inputParameters(e) {
+  window.RandrawState.Options[e.id] = e.value;
+}
