@@ -131,7 +131,13 @@ function run() {
     Utils.randomInt(5 + minAllowedH, canH - 5 - minAllowedH),
   ];
   let [maxW, maxH] = [Math.min(x, canW - x), Math.min(y, canH - y)];
-  if (state.Options.DistanceRatioBias && (Math.random() > scorePercent100)) {
+
+  const distanceRatioBias = state.Options.DistanceRatioBias;
+  const sizeBiasThreshold = distanceRatioBias > 0.5 ?
+    (1 - (distanceRatioBias / 0.5 - 1)) * scorePercent100
+    : scorePercent100 + ((1 - scorePercent100) * (2 * (0.5 - distanceRatioBias)));
+
+  if (Math.random() > sizeBiasThreshold) {
     [maxW, maxH] = [maxW * Utils.random(scorePercent100, 1), maxH * Utils.random(scorePercent100, 1)];
   }
 
@@ -390,7 +396,7 @@ $(function() {
         Options: {
           GreyscaleCompare: false,
           GreyscaleDrawing: 0.0,
-          DistanceRatioBias: true,
+          DistanceRatioBias: 0.5,
           OpacityRange1: 0.01,
           OpacityRange2: 1.00,
           MaxSizeRange1: 0.01,
