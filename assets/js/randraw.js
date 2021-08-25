@@ -402,6 +402,7 @@ $(function() {
     }, init);
 });
 
-function inputParameters(e) {
-  window.RandrawState.Options[e.id] = e.value;
+function inputParameters(e, prop='value') {
+  // console.log('params:', e, e.id, e[prop]);
+  window.RandrawState.Options[e.id] = e[prop];
 }
