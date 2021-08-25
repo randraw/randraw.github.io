@@ -119,13 +119,26 @@ function run() {
   let scorePercent = score1 / state.Input.InitScoreWhite100;
   let scorePercent100 = scorePercent / 100;
 
+  // Size range allowed
+  const sizeRangeMin = Math.min(state.Options.MaxSizeRange1, state.Options.MaxSizeRange2);
+  const sizeRangeMax = Math.max(state.Options.MaxSizeRange1, state.Options.MaxSizeRange2);
+  const [minAllowedW, maxAllowedW] = [canW * sizeRangeMin / 2, canW * sizeRangeMax / 2];
+  const [minAllowedH, maxAllowedH] = [canH * sizeRangeMin / 2, canH * sizeRangeMax / 2];
+
   // Random rect
-  let [x, y] = [Utils.randomInt(5, canW - 5), Utils.randomInt(5, canH - 5)];
+  let [x, y] = [
+    Utils.randomInt(5 + minAllowedW, canW - 5 - minAllowedW),
+    Utils.randomInt(5 + minAllowedH, canH - 5 - minAllowedH),
+  ];
   let [maxW, maxH] = [Math.min(x, canW - x), Math.min(y, canH - y)];
   if (state.Options.DistanceRatioBias && (Math.random() > scorePercent100)) {
     [maxW, maxH] = [maxW * Utils.random(scorePercent100, 1), maxH * Utils.random(scorePercent100, 1)];
   }
-  let [w, h] = [Utils.randomInt(0, maxW * 2), Utils.randomInt(0, maxH * 2)];
+
+  let [w, h] = [
+    Utils.randomInt(Math.max(0.01, minAllowedW), Math.min(maxW * 2, maxAllowedW * 2)),
+    Utils.randomInt(Math.max(0.01, minAllowedH), Math.min(maxH * 2, maxAllowedH * 2)),
+  ];
 
   const greyscale = Math.random() < state.Options.GreyscaleDrawing;
 
@@ -380,6 +393,8 @@ $(function() {
           DistanceRatioBias: true,
           OpacityRange1: 0.01,
           OpacityRange2: 1.00,
+          MaxSizeRange1: 0.01,
+          MaxSizeRange2: 1.00,
           OutputOpacity: 1,
         }
     };
