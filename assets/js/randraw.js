@@ -159,7 +159,7 @@ function run() {
     const opacityMax = Math.max(state.Options.OpacityRange1, state.Options.OpacityRange2);
     contextOut.globalAlpha = Utils.random(opacityMin, opacityMax);
 
-    let method = Utils.randomInt(0, 5);
+    let method = Utils.randomInt(0, 7);
     if (method === 0) {
       // Fill a rect
       contextOut.fillStyle = Utils.randomRgba(greyscale);
@@ -170,18 +170,29 @@ function run() {
       contextOut.fillStyle = Utils.randomRgba(greyscale);
       contextOut.arc(x, y, (Math.min(w, h) / 2), 0, 2 * Math.PI);
       contextOut.fill();
+    } else if (method === 2) {
+      // Fill a circle
+      contextOut.beginPath();
+      contextOut.fillStyle = Utils.randomRgba(greyscale);
+      contextOut.ellipse(x, y, w / 2, h / 2, Math.random() * Math.PI * 2, 0, Math.PI * 2);
+      contextOut.fill();
     } else {
       // Strokes
       let minSide = Math.min(w, h);
       contextOut.lineWidth = Utils.randomInt(Math.min(minSide, 1), minSide > 1 ? minSide / 2 : minSide);
       contextOut.strokeStyle = Utils.randomRgba(greyscale);
-      if (method === 2) {
+      if (method === 3) {
         // Stroke a rect
         contextOut.strokeRect(x - (w / 2), y - (h / 2), w, h);
-      } else if (method === 3) {
+      } else if (method === 4) {
         // Stroke a circle
         contextOut.beginPath();
         contextOut.arc(x, y, (Math.min(w, h) / 2), 0, 2 * Math.PI);
+        contextOut.stroke();
+      } else if (method === 5) {
+        // Stroke a circle
+        contextOut.beginPath();
+        contextOut.ellipse(x, y, w / 2, h / 2, Math.random() * Math.PI * 2, 0, Math.PI * 2);
         contextOut.stroke();
       } else {
         // Stroke a line
