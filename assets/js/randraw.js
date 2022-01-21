@@ -125,11 +125,17 @@ function run() {
   const [minAllowedW, maxAllowedW] = [canW * sizeRangeMin / 2, canW * sizeRangeMax / 2];
   const [minAllowedH, maxAllowedH] = [canH * sizeRangeMin / 2, canH * sizeRangeMax / 2];
 
-  // Random rect
+
+  const borderW = canW > 10 ? 5 : 0;
+  const borderH = canH > 10 ? 5 : 0;
+
+  // Random rect center point
   let [x, y] = [
-    Utils.randomInt(5 + minAllowedW, canW - 5 - minAllowedW),
-    Utils.randomInt(5 + minAllowedH, canH - 5 - minAllowedH),
+    Utils.randomInt(borderW, canW - borderW - minAllowedW),
+    Utils.randomInt(borderH, canH - borderH - minAllowedH),
   ];
+
+  // The x-y point is the center of the rect
   let [maxW, maxH] = [Math.min(x, canW - x), Math.min(y, canH - y)];
 
   const distanceRatioBias = state.Options.DistanceRatioBias;
@@ -141,48 +147,57 @@ function run() {
     [maxW, maxH] = [maxW * Utils.random(scorePercent100, 1), maxH * Utils.random(scorePercent100, 1)];
   }
 
-  let [w, h] = [
-    Utils.randomInt(Math.max(0.01, minAllowedW), Math.min(maxW * 2, maxAllowedW * 2)),
-    Utils.randomInt(Math.max(0.01, minAllowedH), Math.min(maxH * 2, maxAllowedH * 2)),
-  ];
+  let [wMin, wMax] = [Math.max(0.01, minAllowedW), Math.min(maxW * 2, maxAllowedW * 2)];
+  let [hMin, hMax] = [Math.max(0.01, minAllowedH), Math.min(maxH * 2, maxAllowedH * 2)];
 
-  const greyscale = Math.random() < state.Options.GreyscaleDrawing;
+  try {
+    let [w, h] = [Utils.randomInt(wMin, Math.max(wMin, wMax)), Utils.randomInt(hMin, Math.max(hMin, hMax))];
 
-  const opacityMin = Math.min(state.Options.OpacityRange1, state.Options.OpacityRange2);
-  const opacityMax = Math.max(state.Options.OpacityRange1, state.Options.OpacityRange2);
-  contextOut.globalAlpha = Utils.random(opacityMin, opacityMax);
+    const greyscale = Math.random() < state.Options.GreyscaleDrawing;
 
-  let method = Utils.randomInt(0, 3);
-  if (method === 0) {
-    // Draw the rect
-    contextOut.fillStyle = Utils.randomRgba(greyscale);
-    contextOut.fillRect(x - (w/2), y - (h/2), w, h);
-  } else {
-    let minSide = Math.min(w, h);
-    contextOut.lineWidth = Utils.randomInt(Math.min(minSide, 1), minSide > 1 ? minSide / 2 : minSide);
-    contextOut.strokeStyle = Utils.randomRgba(greyscale);
-    if (method === 1) {
-      contextOut.strokeRect(x - (w/2), y - (h/2), w, h);
+    const opacityMin = Math.min(state.Options.OpacityRange1, state.Options.OpacityRange2);
+    const opacityMax = Math.max(state.Options.OpacityRange1, state.Options.OpacityRange2);
+    contextOut.globalAlpha = Utils.random(opacityMin, opacityMax);
+
+    let method = Utils.randomInt(0, 3);
+    if (method === 0) {
+      // Draw the rect
+      contextOut.fillStyle = Utils.randomRgba(greyscale);
+      contextOut.fillRect(x - (w / 2), y - (h / 2), w, h);
     } else {
-      let direction = Math.random() > 0.5 ? 1 : -1;
-      contextOut.beginPath();
-      contextOut.moveTo(x - (w/2), y + ((h / 2) * direction));
-      contextOut.lineTo(x + (w/2), y + ((h / 2) * -direction));
-      contextOut.stroke();
+      let minSide = Math.min(w, h);
+      contextOut.lineWidth = Utils.randomInt(Math.min(minSide, 1), minSide > 1 ? minSide / 2 : minSide);
+      contextOut.strokeStyle = Utils.randomRgba(greyscale);
+      if (method === 1) {
+        contextOut.strokeRect(x - (w / 2), y - (h / 2), w, h);
+      } else {
+        let direction = Math.random() > 0.5 ? 1 : -1;
+        contextOut.beginPath();
+        contextOut.moveTo(x - (w / 2), y + ((h / 2) * direction));
+        contextOut.lineTo(x + (w / 2), y + ((h / 2) * -direction));
+        contextOut.stroke();
+      }
     }
-  }
 
-  // Score output data after
-  let dataOut2 = contextOut.getImageData(0,0,canW, canH).data;
-  let score2 = scoreImgData(dataIn, dataOut2);
+    // Score output data after
+    let dataOut2 = contextOut.getImageData(0, 0, canW, canH).data;
+    let score2 = scoreImgData(dataIn, dataOut2);
 
-  // console.log(score1, score2, score2 < score1);
-  if (score1 < score2) {
-    contextOut.putImageData(imageDataOut1, 0, 0);
-  } else {
-    state.Counter.Score = scoreRatio;
-    state.Counter.ScorePercent = scorePercent;
-    state.Counter.Iteration.successfulUp();
+    // console.log(score1, score2, score2 < score1);
+    if (score1 < score2) {
+      contextOut.putImageData(imageDataOut1, 0, 0);
+    } else {
+      state.Counter.Score = scoreRatio;
+      state.Counter.ScorePercent = scorePercent;
+      state.Counter.Iteration.successfulUp();
+    }
+  } catch (e) {
+    console.error(
+      `Failed to finish a run: ${JSON.stringify(
+        { wMin, wMax, hMin, hMax, maxW, maxH, minAllowedW, minAllowedH, maxAllowedW, maxAllowedH }
+      )}`,
+      e,
+    );
   }
   setTimeout(function () {
     updateUi();
