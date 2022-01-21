@@ -172,12 +172,12 @@ function run() {
       } else if (shape === 'ShapesFillCircle') {
         contextOut.beginPath();
         contextOut.fillStyle = Utils.randomRgba(greyscale);
-        contextOut.arc(x, y, (Math.min(w, h) / 2), 0, 2 * Math.PI);
+        contextOut.arc(x, y, (Math.min(w, h) / 2), 0, Utils.FULL_RADIAN);
         contextOut.fill();
       } else if (shape === 'ShapesFillEllipse') {
         contextOut.beginPath();
         contextOut.fillStyle = Utils.randomRgba(greyscale);
-        contextOut.ellipse(x, y, w / 2, h / 2, Math.random() * Math.PI * 2, 0, Math.PI * 2);
+        contextOut.ellipse(x, y, w / 2, h / 2, Utils.randomRadian(), 0, Utils.FULL_RADIAN);
         contextOut.fill();
       } else {
         // Strokes
@@ -188,11 +188,17 @@ function run() {
           contextOut.strokeRect(x - (w / 2), y - (h / 2), w, h);
         } else if (shape === 'ShapesStrokeCircle') {
           contextOut.beginPath();
-          contextOut.arc(x, y, (Math.min(w, h) / 2), 0, 2 * Math.PI);
+          contextOut.arc(x, y, (Math.min(w, h) / 2), 0, Utils.FULL_RADIAN);
           contextOut.stroke();
         } else if (shape === 'ShapesStrokeEllipse') {
           contextOut.beginPath();
-          contextOut.ellipse(x, y, w / 2, h / 2, Math.random() * Math.PI * 2, 0, Math.PI * 2);
+          contextOut.ellipse(x, y, w / 2, h / 2, Utils.randomRadian(), 0, Utils.FULL_RADIAN);
+          contextOut.stroke();
+        } else if (shape === 'ShapesStrokeArc') {
+          contextOut.beginPath();
+          const startAngle = Utils.randomRadian();
+          const arc = Utils.randomRadian(0.25);
+          contextOut.ellipse(x, y, w / 2, h / 2, Utils.randomRadian(), startAngle, startAngle + arc);
           contextOut.stroke();
         } else {
           // Stroke a line
@@ -445,6 +451,7 @@ $(function() {
             ShapesFillEllipse: true,
             ShapesStrokeEllipse: true,
             ShapesStrokeLine: true,
+            ShapesStrokeArc: true,
           },
           GreyscaleCompare: false,
           GreyscaleDrawing: 0.0,

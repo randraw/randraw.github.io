@@ -15,10 +15,16 @@ function UtilsConstructor() {
 
   this.randomItem = function(arr) {
     return arr.length > 0 ? arr[this.randomInt(0, arr.length)] : undefined;
-  }
+  };
 
   this.randomByte = function() {
     return this.randomInt(0,255);
+  };
+
+  this.FULL_RADIAN = Math.PI * 2;
+
+  this.randomRadian = function(radMultiplier = 1) {
+    return Math.random() * this.FULL_RADIAN * radMultiplier;
   };
 
   this.randomRgba = function(isGreyscale = false) {
