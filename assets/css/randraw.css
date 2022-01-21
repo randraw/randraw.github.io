@@ -47,6 +47,14 @@ code {
     border-radius: 3px;
 }
 
+#shapes {
+    background-color: #eef6ff;
+    border: 1px solid #e7f1ff;
+    border-radius: 5px;
+    padding-top: 15px;
+    max-width: 300px;
+}
+
 /****************************
  * SMALL SCREENS *
  ****************************/

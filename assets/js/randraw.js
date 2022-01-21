@@ -101,8 +101,6 @@ function run() {
     state.Counter.Time.TimerStart += pauseLen;
   }
 
-  state.Counter.Iteration.totalUp();
-
   // Output Size
   let canvasOut = state.Output.MainCanvas;
   let [canW, canH] = [canvasOut.width, canvasOut.height];
@@ -124,7 +122,6 @@ function run() {
   const sizeRangeMax = Math.max(state.Options.MaxSizeRange1, state.Options.MaxSizeRange2);
   const [minAllowedW, maxAllowedW] = [canW * sizeRangeMin / 2, canW * sizeRangeMax / 2];
   const [minAllowedH, maxAllowedH] = [canH * sizeRangeMin / 2, canH * sizeRangeMax / 2];
-
 
   const borderW = canW > 10 ? 5 : 0;
   const borderH = canH > 10 ? 5 : 0;
@@ -159,62 +156,67 @@ function run() {
     const opacityMax = Math.max(state.Options.OpacityRange1, state.Options.OpacityRange2);
     contextOut.globalAlpha = Utils.random(opacityMin, opacityMax);
 
-    let method = Utils.randomInt(0, 7);
-    if (method === 0) {
-      // Fill a rect
-      contextOut.fillStyle = Utils.randomRgba(greyscale);
-      contextOut.fillRect(x - (w / 2), y - (h / 2), w, h);
-    } else if (method === 1) {
-      // Fill a circle
-      contextOut.beginPath();
-      contextOut.fillStyle = Utils.randomRgba(greyscale);
-      contextOut.arc(x, y, (Math.min(w, h) / 2), 0, 2 * Math.PI);
-      contextOut.fill();
-    } else if (method === 2) {
-      // Fill a circle
-      contextOut.beginPath();
-      contextOut.fillStyle = Utils.randomRgba(greyscale);
-      contextOut.ellipse(x, y, w / 2, h / 2, Math.random() * Math.PI * 2, 0, Math.PI * 2);
-      contextOut.fill();
-    } else {
-      // Strokes
-      let minSide = Math.min(w, h);
-      contextOut.lineWidth = Utils.randomInt(Math.min(minSide, 1), minSide > 1 ? minSide / 2 : minSide);
-      contextOut.strokeStyle = Utils.randomRgba(greyscale);
-      if (method === 3) {
-        // Stroke a rect
-        contextOut.strokeRect(x - (w / 2), y - (h / 2), w, h);
-      } else if (method === 4) {
-        // Stroke a circle
-        contextOut.beginPath();
-        contextOut.arc(x, y, (Math.min(w, h) / 2), 0, 2 * Math.PI);
-        contextOut.stroke();
-      } else if (method === 5) {
-        // Stroke a circle
-        contextOut.beginPath();
-        contextOut.ellipse(x, y, w / 2, h / 2, Math.random() * Math.PI * 2, 0, Math.PI * 2);
-        contextOut.stroke();
-      } else {
-        // Stroke a line
-        let direction = Math.random() > 0.5 ? 1 : -1;
-        contextOut.beginPath();
-        contextOut.moveTo(x - (w / 2), y + ((h / 2) * direction));
-        contextOut.lineTo(x + (w / 2), y + ((h / 2) * -direction));
-        contextOut.stroke();
-      }
+    let selectedShapes = state.Options.ColCache['Shapes'];
+    if (!selectedShapes) {
+      selectedShapes =
+        Object.entries(state.Options.Shapes)
+          .filter(([,v]) => v).map(([k]) => k);
+      state.Options.ColCache['Shapes'] = selectedShapes;
     }
 
-    // Score output data after
-    let dataOut2 = contextOut.getImageData(0, 0, canW, canH).data;
-    let score2 = scoreImgData(dataIn, dataOut2);
+    if (selectedShapes.length > 0) {
+      let shape = Utils.randomItem(selectedShapes);
+      if (shape === 'ShapesFillRect') {
+        contextOut.fillStyle = Utils.randomRgba(greyscale);
+        contextOut.fillRect(x - (w / 2), y - (h / 2), w, h);
+      } else if (shape === 'ShapesFillCircle') {
+        contextOut.beginPath();
+        contextOut.fillStyle = Utils.randomRgba(greyscale);
+        contextOut.arc(x, y, (Math.min(w, h) / 2), 0, 2 * Math.PI);
+        contextOut.fill();
+      } else if (shape === 'ShapesFillEllipse') {
+        contextOut.beginPath();
+        contextOut.fillStyle = Utils.randomRgba(greyscale);
+        contextOut.ellipse(x, y, w / 2, h / 2, Math.random() * Math.PI * 2, 0, Math.PI * 2);
+        contextOut.fill();
+      } else {
+        // Strokes
+        let minSide = Math.min(w, h);
+        contextOut.lineWidth = Utils.randomInt(Math.min(minSide, 1), minSide > 1 ? minSide / 2 : minSide);
+        contextOut.strokeStyle = Utils.randomRgba(greyscale);
+        if (shape === 'ShapesStrokeRect') {
+          contextOut.strokeRect(x - (w / 2), y - (h / 2), w, h);
+        } else if (shape === 'ShapesStrokeCircle') {
+          contextOut.beginPath();
+          contextOut.arc(x, y, (Math.min(w, h) / 2), 0, 2 * Math.PI);
+          contextOut.stroke();
+        } else if (shape === 'ShapesStrokeEllipse') {
+          contextOut.beginPath();
+          contextOut.ellipse(x, y, w / 2, h / 2, Math.random() * Math.PI * 2, 0, Math.PI * 2);
+          contextOut.stroke();
+        } else {
+          // Stroke a line
+          let direction = Math.random() > 0.5 ? 1 : -1;
+          contextOut.beginPath();
+          contextOut.moveTo(x - (w / 2), y + ((h / 2) * direction));
+          contextOut.lineTo(x + (w / 2), y + ((h / 2) * -direction));
+          contextOut.stroke();
+        }
+      }
 
-    // console.log(score1, score2, score2 < score1);
-    if (score1 < score2) {
-      contextOut.putImageData(imageDataOut1, 0, 0);
-    } else {
-      state.Counter.Score = scoreRatio;
-      state.Counter.ScorePercent = scorePercent;
-      state.Counter.Iteration.successfulUp();
+      // Score output data after
+      let dataOut2 = contextOut.getImageData(0, 0, canW, canH).data;
+      let score2 = scoreImgData(dataIn, dataOut2);
+
+      // console.log(score1, score2, score2 < score1);
+      if (score1 < score2) {
+        contextOut.putImageData(imageDataOut1, 0, 0);
+      } else {
+        state.Counter.Score = scoreRatio;
+        state.Counter.ScorePercent = scorePercent;
+        state.Counter.Iteration.successfulUp();
+      }
+      state.Counter.Iteration.totalUp();
     }
   } catch (e) {
     console.error(
@@ -434,6 +436,16 @@ $(function() {
           canRun: false,
         },
         Options: {
+          ColCache: {},
+          Shapes: {
+            ShapesFillRect: true,
+            ShapesStrokeRect: true,
+            ShapesFillCircle: true,
+            ShapesStrokeCircle: true,
+            ShapesFillEllipse: true,
+            ShapesStrokeEllipse: true,
+            ShapesStrokeLine: true,
+          },
           GreyscaleCompare: false,
           GreyscaleDrawing: 0.0,
           DistanceRatioBias: 0.5,
@@ -463,7 +475,11 @@ $(function() {
     }, init);
 });
 
-function inputParameters(e, prop='value') {
+function inputParameters(e, prop='value', col) {
   // console.log('params:', e, e.id, e[prop]);
-  window.RandrawState.Options[e.id] = e[prop];
+  let options = window.RandrawState.Options;
+  (col ? options[col] : options)[e.id] = e[prop];
+  if (col) {
+    options.ColCache[col] = null;
+  }
 }

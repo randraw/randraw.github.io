@@ -108,6 +108,43 @@
                                             <input type="range" min="0" max="1" step="0.01" value="0.5" class="slider" id="DistanceRatioBias" oninput="inputParameters(this)"/>
                                             <br/>
 
+                                            <p>
+                                                <a class="btn btn-info" data-toggle="collapse" href="#shapes" role="button" aria-expanded="false" aria-controls="shapes">
+                                                    Select shapes
+                                                </a>
+                                            </p>
+                                            <div class="collapse" id="shapes">
+                                                <ul>
+                                                    <li>
+                                                        <input type="checkbox" id="ShapesFillRect" checked oninput="inputParameters(this, 'checked', 'Shapes')"/>
+                                                        <label for="ShapesFillRect">Filled rectangle</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="ShapesStrokeRect" checked oninput="inputParameters(this, 'checked', 'Shapes')"/>
+                                                        <label for="ShapesStrokeRect">Stroked rectangle</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="ShapesFillCircle" checked oninput="inputParameters(this, 'checked', 'Shapes')"/>
+                                                        <label for="ShapesFillCircle">Filled circle</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="ShapesStrokeCircle" checked oninput="inputParameters(this, 'checked', 'Shapes')"/>
+                                                        <label for="ShapesStrokeCircle">Stroked circle</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="ShapesFillEllipse" checked oninput="inputParameters(this, 'checked', 'Shapes')"/>
+                                                        <label for="ShapesFillEllipse">Filled ellipse</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="ShapesStrokeEllipse" checked oninput="inputParameters(this, 'checked', 'Shapes')"/>
+                                                        <label for="ShapesStrokeEllipse">Stroked ellipse</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="ShapesStrokeLine" checked oninput="inputParameters(this, 'checked', 'Shapes')"/>
+                                                        <label for="ShapesStrokeLine">Stroked line</label>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
 
                                     </div>

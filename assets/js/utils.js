@@ -13,6 +13,10 @@ function UtilsConstructor() {
     return Math.floor(this.random(min,max));
   };
 
+  this.randomItem = function(arr) {
+    return arr.length > 0 ? arr[this.randomInt(0, arr.length)] : undefined;
+  }
+
   this.randomByte = function() {
     return this.randomInt(0,255);
   };
