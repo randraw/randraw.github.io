@@ -164,6 +164,14 @@ function run() {
       state.Options.ColCache['Shapes'] = selectedShapes;
     }
 
+    const filters = [];
+
+    if (state.Options.SoftBlur) {
+      filters.push('blur(1px)');
+    }
+
+    contextOut.filter = filters.length > 0 ? filters.join(' ') : 'none';
+
     if (selectedShapes.length > 0) {
       let shape = Utils.randomItem(selectedShapes);
       if (shape === 'ShapesFillRect') {
@@ -461,6 +469,7 @@ $(function() {
           MaxSizeRange1: 0.01,
           MaxSizeRange2: 1.00,
           OutputOpacity: 1,
+          SoftBlur: true,
         }
     };
 
