@@ -464,12 +464,12 @@ $(function() {
           GreyscaleCompare: false,
           GreyscaleDrawing: 0.0,
           DistanceRatioBias: 0.5,
-          OpacityRange1: 0.01,
+          OpacityRange1: 0.25,
           OpacityRange2: 1.00,
           MaxSizeRange1: 0.01,
-          MaxSizeRange2: 1.00,
+          MaxSizeRange2: 0.75,
           OutputOpacity: 1,
-          SoftBlur: true,
+          SoftBlur: false,
         }
     };
 
@@ -492,9 +492,16 @@ $(function() {
 });
 
 function inputParameters(e, prop='value', col) {
-  // console.log('params:', e, e.id, e[prop]);
   let options = window.RandrawState.Options;
-  (col ? options[col] : options)[e.id] = e[prop];
+  const value = e[prop];
+  if (e.id === 'ShapesAll') {
+    Object.keys(options[col]).forEach(k => {
+      options[col][k] = value;
+      $(`#${k}`).prop('checked', value);
+    });
+  } else {
+    (col ? options[col] : options)[e.id] = value;
+  }
   if (col) {
     options.ColCache[col] = null;
   }
